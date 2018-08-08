@@ -248,4 +248,5 @@ venv.bak/
 # mypy
 .mypy_cache/
 /spider/scylla.db
+*.db
 

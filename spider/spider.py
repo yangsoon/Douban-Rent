@@ -61,11 +61,11 @@ async def douban_producer(queue, proxy, place, url, start, end):
                 await get_urls(content, queue)
                 count = 1
         except AttributeError as ae:
-            print(content)
             if count <= config.retry_time:
                 logging.warning(f"异常任务 生产者 {place} 解析 {place} 第 {start} 页 出现 {repr(ae)} 错误 正在重试第 {count} 次")
                 count += 1
                 start -= 1
+                continue
             else:
                 count = 1
                 logging.warning(f"异常任务 生产者 {place} 可能因为页面丢失放弃 解析 {place} 第 {start} 页")
@@ -88,7 +88,6 @@ async def douban_consumer(queue, proxy, num):
                 await store_page_info(content)
                 count = 1
         except AttributeError as ae:
-            print(content)
             if count <= config.retry_time:
                 logging.warning(f"异常任务 消费者 {num} 号 解析 {url} 出现 {repr(ae)} 正在重试第 {count} 次")
                 count += 1
@@ -109,9 +108,11 @@ async def main(loop):
     queue = asyncio.Queue(maxsize=config.queue_num)
     proxy = ProxyPool(maxsize=config.proxy_queue_num)
     await proxy.init_proxy_pool(config.local_num)
-    producer = [loop.create_task(douban_producer(queue, proxy, place, url, config.start_page, config.end_page)) for place, url in config.urls.items()]
+    producer = [loop.create_task(douban_producer(queue, proxy, place, url, config.start_page, config.end_page))
+                for place, url in config.urls.items()]
     consumer = [loop.create_task(douban_consumer(queue, proxy, i)) for i in range(config.consumer_num)]
     await asyncio.wait(consumer + producer)
+
 
 if __name__ == "__main__":
     event_loop = asyncio.get_event_loop()
