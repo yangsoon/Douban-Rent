@@ -1,8 +1,11 @@
 import aiohttp
-from time import strftime
 from asyncio import PriorityQueue
 from asyncio import Lock
 from config import proxy_host
+from util import log
+
+import logging
+log(logging, None)
 
 
 class MyPriorityQueue(PriorityQueue):
@@ -47,8 +50,7 @@ class ProxyPool:
             if len(self.proxies) == 0:
                 self.countries = ''
                 self.page = 1
-                print(strftime('[%H:%M:%S]'), end=' ')
-                print("代理资源紧缺, 可以重启代理池")
+                logging.error("代理资源紧缺, 可以重启代理池")
                 continue
             break
 
@@ -64,5 +66,4 @@ class ProxyPool:
                 proxy_url = f"http://{self.proxies[self.idx]['ip']}:{self.proxies[self.idx]['port']}"
                 await self.queue.put(proxy_url, float(self.proxies[self.idx]['latency'])/10)
             self.idx += 1
-            print(strftime('[%H:%M:%S]'), end=' ')
-            print(f"代理队列添加新代理 {proxy_url}")
+            logging.info(f"新增代理 代理队列添加代理 {proxy_url}")
