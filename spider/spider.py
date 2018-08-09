@@ -13,7 +13,7 @@ log(logging, None)
 
 async def aioget(url, client, proxy: ProxyPool):
     while True:
-        score, proxy_url = await proxy.queue.get()
+        proxy_url, score = await proxy.queue.get()
         proxy.queue.task_done()
         logging.info(f"任务详情 抓取 {url} 使用代理: {proxy_url} 分值: {score}")
         try:
@@ -45,7 +45,7 @@ async def aioget(url, client, proxy: ProxyPool):
             await proxy.next_proxy()
 
 
-async def douban_producer(queue, proxy, place, url, start, end):
+async def douban_producer(queue, proxy, place, url, start, end, sleep_time):
     logging.info(f"任务开始 生产者 {place} 开始执行")
     async with aiohttp.ClientSession() as client:
         content = await aioget(url+'0', client, proxy)
@@ -69,13 +69,13 @@ async def douban_producer(queue, proxy, place, url, start, end):
             else:
                 count = 1
                 logging.warning(f"异常任务 生产者 {place} 可能因为页面丢失放弃 解析 {place} 第 {start} 页")
-        await asyncio.sleep(config.producer_time + random.randint(6, 11))
+        await asyncio.sleep(sleep_time + random.randint(6, 11))
         start += 1
     await queue.put(None)
     logging.info(f"任务结束 生产者 {place} 执行结束")
 
 
-async def douban_consumer(queue, proxy, num):
+async def douban_consumer(queue, proxy, num, sleep_time):
     logging.info(f"任务开始 消费者 {num} 开始执行")
     url = await queue.get()
     queue.task_done()
@@ -95,7 +95,7 @@ async def douban_consumer(queue, proxy, num):
             else:
                 count = 1
                 logging.warning(f"异常任务 消费者 {num} 号 可能因为页面丢失放弃解析 {url}")
-        await asyncio.sleep(config.consumer_time + random.randint(2, 6))
+        await asyncio.sleep(sleep_time + random.randint(2, 6))
         url = await queue.get()
         queue.task_done()
         if url is None:
@@ -108,9 +108,10 @@ async def main(loop):
     queue = asyncio.Queue(maxsize=config.queue_num)
     proxy = ProxyPool(maxsize=config.proxy_queue_num)
     await proxy.init_proxy_pool(config.local_num)
-    producer = [loop.create_task(douban_producer(queue, proxy, place, url, config.start_page, config.end_page))
-                for place, url in config.urls.items()]
-    consumer = [loop.create_task(douban_consumer(queue, proxy, i)) for i in range(config.consumer_num)]
+    producer = [loop.create_task(douban_producer(queue, proxy, place, url, config.start_page, config.end_page,
+                config.producer_time)) for place, url in config.urls.items()]
+    consumer = [loop.create_task(douban_consumer(queue, proxy, i,
+                config.consumer_num)) for i in range(config.consumer_num)]
     await asyncio.wait(consumer + producer)
 
 

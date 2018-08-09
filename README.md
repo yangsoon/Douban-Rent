@@ -21,8 +21,6 @@
 python3 spider.py
 ```
 
-2. 初始化后使用celery+requests进行定时抓取
-
 ### 代理池
 
 使用 Intelligent proxy pool for Humans™ 的 scylla 地址

@@ -1,7 +1,7 @@
 import logging
 from bs4 import BeautifulSoup
 from config import LOG_FORMAT, DATE_FORMAT
-
+import motor
 
 def log(l: logging, filename):
     l.basicConfig(filename=filename, level=logging.INFO, format=LOG_FORMAT, datefmt=DATE_FORMAT)
