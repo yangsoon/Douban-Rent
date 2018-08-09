@@ -1,16 +1,19 @@
 # 豆瓣小组的页面url截取到"start="
 urls = {
-    "beijing1": "https://www.douban.com/group/beijingzufang/discussion?start=",
-    "beijing2": "https://www.douban.com/group/26926/discussion?start=",
-    "beijing3": "https://www.douban.com/group/opking/discussion?start=",
-    "beijing4": "https://www.douban.com/group/279962/discussion?start=",
+    "beijing": {
+        1: "https://www.douban.com/group/beijingzufang/discussion?start=",
+        # 2: "https://www.douban.com/group/26926/discussion?start=",
+        # 3: "https://www.douban.com/group/opking/discussion?start=",
+        # 4: "https://www.douban.com/group/279962/discussion?start="
+    }
+
 }
 
 # 抓取开始页码
 start_page = 1
 
 # 抓取截止页码
-end_page = 10
+end_page = 1
 
 # 代理池接口 使用 scylla 地址 https://github.com/imWildCat/scylla
 proxy_host = "http://localhost:8899/api/v1/proxies"
@@ -52,3 +55,10 @@ retry_time = 5
 LOG_FORMAT = "%(asctime)s - %(message)s"
 
 DATE_FORMAT = "%m/%d %H:%M:%S"
+
+# mongodb 配置信息
+
+mongo = {
+    "host": "127.0.0.1",
+    "port": 27017
+}

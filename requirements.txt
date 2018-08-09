@@ -3,3 +3,4 @@ tornado-cors
 beautifulsoup4
 ujson
 aiohttp
+motor

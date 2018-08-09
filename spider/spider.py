@@ -5,7 +5,7 @@ from aiohttp import ClientConnectionError
 
 import config
 from proxy_pool import ProxyPool
-from util import log, get_urls, store_page_info, get_end_page
+from util import log, get_urls, get_page_info, get_end_page
 
 import logging
 log(logging, None)
@@ -45,7 +45,7 @@ async def aioget(url, client, proxy: ProxyPool):
             await proxy.next_proxy()
 
 
-async def douban_producer(queue, proxy, place, url, start, end, sleep_time):
+async def douban_producer(queue, proxy, place, idx, url, start, end, sleep_time):
     logging.info(f"任务开始 生产者 {place} 开始执行")
     async with aiohttp.ClientSession() as client:
         content = await aioget(url+'0', client, proxy)
@@ -58,7 +58,7 @@ async def douban_producer(queue, proxy, place, url, start, end, sleep_time):
             async with aiohttp.ClientSession() as client:
                 content = await aioget(url + str((start-1)*25), client, proxy)
                 logging.info(f"任务详情 生产者 {place} 在抓取第 {start} 页 {url + str((start-1)*25)}")
-                await get_urls(content, queue)
+                await get_urls(content, queue, place, idx)
                 count = 1
         except AttributeError as ae:
             if count <= config.retry_time:
@@ -85,7 +85,7 @@ async def douban_consumer(queue, proxy, num, sleep_time):
             async with aiohttp.ClientSession() as client:
                 content = await aioget(url, client, proxy)
                 logging.info(f"任务详情 消费者 {num} 号 正在抓取 {url}")
-                await store_page_info(content)
+                await get_page_info(content)
                 count = 1
         except AttributeError as ae:
             if count <= config.retry_time:
@@ -108,8 +108,13 @@ async def main(loop):
     queue = asyncio.Queue(maxsize=config.queue_num)
     proxy = ProxyPool(maxsize=config.proxy_queue_num)
     await proxy.init_proxy_pool(config.local_num)
-    producer = [loop.create_task(douban_producer(queue, proxy, place, url, config.start_page, config.end_page,
-                config.producer_time)) for place, url in config.urls.items()]
+    producer = []
+    for place, urls in config.urls:
+        for idx, url in urls:
+            loop.create_task(
+                douban_producer(queue, proxy, place, idx, url, config.start_page,
+                                config.end_page, config.producer_time)
+            )
     consumer = [loop.create_task(douban_consumer(queue, proxy, i,
                 config.consumer_num)) for i in range(config.consumer_num)]
     await asyncio.wait(consumer + producer)
