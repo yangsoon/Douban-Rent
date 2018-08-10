@@ -46,7 +46,7 @@ async def aioget(url, client, proxy: ProxyPool):
 
 
 async def douban_producer(queue, proxy, place, idx, url, start, end, sleep_time):
-    logging.info(f"任务开始 生产者 {place} 开始执行")
+    logging.info(f"任务开始 生产者 {place} {idx} 开始执行")
     async with aiohttp.ClientSession() as client:
         content = await aioget(url+'0', client, proxy)
         end_page = get_end_page(content)

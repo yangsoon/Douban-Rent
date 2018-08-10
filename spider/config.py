@@ -15,7 +15,7 @@ start_page = 1
 # 抓取截止页码
 end_page = 2
 
-# 代理池接口 使用 scylla 地址 https://github.com/imWildCat/scylla
+# 代理池接口 使用 scylla
 proxy_host = "http://localhost:8899/api/v1/proxies"
 
 # 消费者数量 即处理来自生产者的url
