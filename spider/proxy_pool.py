@@ -10,8 +10,8 @@ log(logging, None)
 
 
 class MyPriorityQueue(PriorityQueue):
-    def __init__(self, maxsize):
-        PriorityQueue.__init__(self, maxsize=maxsize)
+    def __init__(self):
+        PriorityQueue.__init__(self)
         self.counter = 0
 
     async def put(self, item, priority):
@@ -25,8 +25,7 @@ class MyPriorityQueue(PriorityQueue):
 
 class ProxyPool:
 
-    def __init__(self, maxsize):
-        self.maxsize = maxsize
+    def __init__(self):
         self.url = proxy_host
         self.countries = 'CN'
         self.page = 0
@@ -34,7 +33,7 @@ class ProxyPool:
         self.init_num = 0
         self.proxies = []
         self.lock = Lock()
-        self.queue = MyPriorityQueue(maxsize=self.maxsize)
+        self.queue = MyPriorityQueue()
 
     async def init_proxy_pool(self, num):
         self.init_num = num
@@ -57,7 +56,7 @@ class ProxyPool:
                 break
             if len(self.proxies) == 0:
                 self.countries, self.page = '', 1
-                logging.error("代理错误 代理资源紧缺, 可以重启代理池")
+                logging.error("代理错误 代理资源紧缺 正在更换代理区域或者可以重启代理池")
                 continue
             break
 

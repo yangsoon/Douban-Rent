@@ -2,18 +2,18 @@
 urls = {
     "beijing": {
         1: "https://www.douban.com/group/beijingzufang/discussion?start=",
-        # 2: "https://www.douban.com/group/26926/discussion?start=",
+        2: "https://www.douban.com/group/26926/discussion?start=",
         # 3: "https://www.douban.com/group/opking/discussion?start=",
         # 4: "https://www.douban.com/group/279962/discussion?start="
+        # 5: "https://www.douban.com/group/haidianzufang/discussion?start="
     }
-
 }
 
 # 抓取开始页码
 start_page = 1
 
 # 抓取截止页码
-end_page = 1
+end_page = 2
 
 # 代理池接口 使用 scylla 地址 https://github.com/imWildCat/scylla
 proxy_host = "http://localhost:8899/api/v1/proxies"
@@ -23,9 +23,6 @@ consumer_num = 4
 
 # url队列长度
 queue_num = 500
-
-# 代理池队列长度
-proxy_queue_num = 20
 
 # 代理池队列初始化长度 队列填入 None 即一开始不使用代理 建议长度等于 生产者数量 + 消费者数量
 local_num = len(urls) + consumer_num
@@ -57,8 +54,10 @@ LOG_FORMAT = "%(asctime)s - %(message)s"
 DATE_FORMAT = "%m/%d %H:%M:%S"
 
 # mongodb 配置信息
-
 mongo = {
     "host": "127.0.0.1",
     "port": 27017
 }
+
+# redis 配置信息
+redis = ("127.0.0.1", 6379)

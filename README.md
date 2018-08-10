@@ -11,7 +11,9 @@
 使用tornado搭建web服务
 
 ### 数据库
-使用MongoDB
+
+1. MongoDB存储租房信息
+2. redis作为缓存 记录帖子id
 
 ### 爬虫
 

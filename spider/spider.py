@@ -62,23 +62,29 @@ async def douban_producer(queue, proxy, place, idx, url, start, end, sleep_time)
                 count = 1
         except AttributeError as ae:
             if count <= config.retry_time:
-                logging.warning(f"异常任务 生产者 {place} 解析 {place} 第 {start} 页 出现 {repr(ae)} 错误 正在重试第 {count} 次")
+                logging.warning(f"异常任务 生产者 {place} 解析 {place} 第 {start} 页 "
+                                f"出现 {repr(ae)} 错误 正在重试第 {count} 次")
                 count += 1
                 start -= 1
                 continue
             else:
                 count = 1
-                logging.warning(f"异常任务 生产者 {place} 可能因为页面丢失放弃 解析 {place} 第 {start} 页")
-        await asyncio.sleep(sleep_time + random.randint(6, 11))
+                logging.warning(f"异常任务 生产者 {place} 可能因为页面丢失放弃 "
+                                f"解析 {place} 第 {start} 页")
+        await asyncio.sleep(sleep_time + random.randint(4, 6))
         start += 1
     await queue.put(None)
-    logging.info(f"任务结束 生产者 {place} 执行结束")
+    logging.info(f"任务结束 生产者 {place} {idx} 执行结束")
 
 
 async def douban_consumer(queue, proxy, num, sleep_time):
     logging.info(f"任务开始 消费者 {num} 开始执行")
     url = await queue.get()
     queue.task_done()
+    if url is None:
+        logging.info(f"任务结束 消费者 {num} 执行结束")
+        await queue.put(None)
+        return
     count = 1
     while True:
         try:
@@ -89,13 +95,14 @@ async def douban_consumer(queue, proxy, num, sleep_time):
                 count = 1
         except AttributeError as ae:
             if count <= config.retry_time:
-                logging.warning(f"异常任务 消费者 {num} 号 解析 {url} 出现 {repr(ae)} 正在重试第 {count} 次")
+                logging.warning(f"异常任务 消费者 {num} 号 解析 {url} "
+                                f"出现 {repr(ae)} 正在重试第 {count} 次")
                 count += 1
                 continue
             else:
                 count = 1
                 logging.warning(f"异常任务 消费者 {num} 号 可能因为页面丢失放弃解析 {url}")
-        await asyncio.sleep(sleep_time + random.randint(2, 6))
+        await asyncio.sleep(sleep_time + random.randint(2, 4))
         url = await queue.get()
         queue.task_done()
         if url is None:
@@ -106,11 +113,11 @@ async def douban_consumer(queue, proxy, num, sleep_time):
 
 async def main(loop):
     queue = asyncio.Queue(maxsize=config.queue_num)
-    proxy = ProxyPool(maxsize=config.proxy_queue_num)
+    proxy = ProxyPool()
     await proxy.init_proxy_pool(config.local_num)
     producer = []
-    for place, urls in config.urls:
-        for idx, url in urls:
+    for place, urls in config.urls.items():
+        for idx, url in urls.items():
             loop.create_task(
                 douban_producer(queue, proxy, place, idx, url, config.start_page,
                                 config.end_page, config.producer_time)
