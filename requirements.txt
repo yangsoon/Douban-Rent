@@ -1,7 +1,6 @@
 tornado
 tornado-cors
 beautifulsoup4
-ujson
 aiohttp
-motor
 aioredis
+motor
