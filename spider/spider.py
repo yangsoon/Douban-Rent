@@ -91,7 +91,7 @@ async def douban_consumer(queue, proxy, num, sleep_time):
             async with aiohttp.ClientSession() as client:
                 content = await aioget(url, client, proxy)
                 logging.info(f"任务详情 消费者 {num} 号 正在抓取 {url}")
-                await get_page_info(content)
+                await get_page_info(content, url)
                 count = 1
         except AttributeError as ae:
             if count <= config.retry_time:

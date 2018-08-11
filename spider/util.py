@@ -14,11 +14,11 @@ client = StoreInfo(mongo)
 
 
 async def check_topic_id(client, topic_id):
-    res = await client.sismember("topic", topic_id)
+    res = await client.sismember("record", topic_id)
     if res:
         return True
     else:
-        await client.sadd("topic", topic_id)
+        await client.sadd("record", topic_id)
         return False
 
 
@@ -51,9 +51,20 @@ async def get_urls(content, queue, place, idx):
     await cache.wait_closed()
 
 
-async def get_page_info(content):
+async def get_page_info(content, url):
+    topic_id = url.split('/')[-2]
     c = BeautifulSoup(content, "lxml")
     add_time = c.find(class_="color-green").text
+    report = c.find(id="link-report")
+    detail = report.text.replace("\n", '').replace('-', '')
+    imgs = [img.attrs['src'] for img in report.findAll("img")]
+    page = {
+        'topic_id': topic_id,
+        'add_time': add_time,
+        'detail': detail,
+        'imgs': imgs
+    }
+    await client.store_page(page)
 
 
 def get_end_page(content):
