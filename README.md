@@ -18,6 +18,7 @@
 ### 爬虫
 
 1. 初始化爬虫使用aiohttp进行抓取并放入数据库 修改spider目录下的config文件进行自主配置
+2. 使用apscheduler分配定时爬虫任务
 
 ```
 python3 spider.py
