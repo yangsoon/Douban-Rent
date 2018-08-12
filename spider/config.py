@@ -6,6 +6,9 @@ urls = {
         # 3: "https://www.douban.com/group/opking/discussion?start=",
         # 4: "https://www.douban.com/group/279962/discussion?start="
         # 5: "https://www.douban.com/group/haidianzufang/discussion?start="
+    },
+    "hangzhou": {
+        1: "https://www.douban.com/group/haidianzufang/discussion?start="
     }
 }
 

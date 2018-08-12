@@ -10,8 +10,8 @@ log(logging, None)
 
 
 class MyPriorityQueue(PriorityQueue):
-    def __init__(self):
-        PriorityQueue.__init__(self)
+    def __init__(self, maxsize):
+        PriorityQueue.__init__(self, maxsize=maxsize)
         self.counter = 0
 
     async def put(self, item, priority):
@@ -33,7 +33,7 @@ class ProxyPool:
         self.init_num = 0
         self.proxies = []
         self.lock = Lock()
-        self.queue = MyPriorityQueue()
+        self.queue = MyPriorityQueue(maxsize=50)
 
     async def init_proxy_pool(self, num):
         self.init_num = num

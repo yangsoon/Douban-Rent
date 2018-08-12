@@ -111,22 +111,51 @@ async def douban_consumer(queue, proxy, num, sleep_time):
             break
 
 
-async def main(loop):
+async def model_one(loop, proxy, end_page):
     queue = asyncio.Queue(maxsize=config.queue_num)
-    proxy = ProxyPool()
     await proxy.init_proxy_pool(config.local_num)
     producer = []
     for place, urls in config.urls.items():
         for idx, url in urls.items():
             loop.create_task(
-                douban_producer(queue, proxy, place, idx, url, config.start_page,
-                                config.end_page, config.producer_time)
+                douban_producer(queue, proxy, place, idx, url, 1,
+                                end_page, config.producer_time)
             )
     consumer = [loop.create_task(douban_consumer(queue, proxy, i,
-                config.consumer_num)) for i in range(config.consumer_num)]
+                                                 config.consumer_num)) for i in range(config.consumer_num)]
     await asyncio.wait(consumer + producer)
 
 
+async def model_two(loop, proxy, place, end_page):
+    queue = asyncio.Queue(maxsize=config.queue_num)
+    await proxy.init_proxy_pool(config.local_num)
+    producer = []
+    for idx, url in config.urls[place].items():
+        loop.create_task(
+            douban_producer(queue, proxy, place, idx, url, 1,
+                            end_page, config.producer_time)
+        )
+    consumer = [loop.create_task(douban_consumer(queue, proxy, i,
+                                                 config.consumer_num)) for i in range(config.consumer_num)]
+    await asyncio.wait(consumer + producer)
+
 if __name__ == "__main__":
+    proxy = ProxyPool()
     event_loop = asyncio.get_event_loop()
-    event_loop.run_until_complete(main(event_loop))
+    print("请输入对应的数字选择初始化模式")
+    print("1 全部抓取")
+    print("2 选择地区进行抓取")
+    flag = input()
+    if flag == "1":
+        print("你已选择 模式1 全部抓取 请输入抓取页数")
+        end_page = input()
+        event_loop.run_until_complete(model_one(event_loop, proxy, int(end_page)))
+    else:
+        print("你已选择 模式2 选择地区抓取 请输入对应数字选择抓取地区")
+        place_map = {idx: place for idx, place in enumerate(config.urls.keys())}
+        for key, place in place_map.items():
+            print(f"{key}: {place}")
+        place = input()
+        print(f"你已选择 地区: {place_map[int(place)]} 请输入抓取页数")
+        end_page = input()
+        event_loop.run_until_complete(model_two(event_loop, proxy, place_map[int(place)], int(end_page)))
