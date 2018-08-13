@@ -122,7 +122,7 @@ async def model_one(loop, proxy, end_page):
                                 end_page, config.producer_time)
             )
     consumer = [loop.create_task(douban_consumer(queue, proxy, i,
-                                                 config.consumer_num)) for i in range(config.consumer_num)]
+                config.consumer_num)) for i in range(config.consumer_num)]
     await asyncio.wait(consumer + producer)
 
 

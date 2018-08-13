@@ -2,7 +2,7 @@
     <div class="layout">
         <Layout>
             <Header>
-                <Menu mode="horizontal" theme="dark" active-name="1">
+                <Menu mode="horizontal" theme="dark" active-name="index">
                     <div class="layout-logo">
                       <h2 style="color: white; line-height: 35px;">
                         豆瓣租房
@@ -30,7 +30,7 @@
                     <BreadcrumbItem>Components</BreadcrumbItem>
                     <BreadcrumbItem>Layout</BreadcrumbItem>
                 </Breadcrumb>
-                <Content :style="{padding: '24px 0',background: '#fff'}">
+                <Content :style="{padding: '15px 0',background: '#fff'}">
                     <Layout>
                         <Sider hide-trigger :style="{background: '#fff'}">
                             <Menu active-name="1-2" theme="light" width="auto" :open-names="['1']">
@@ -39,7 +39,8 @@
                                         <Icon type="ios-navigate"></Icon>
                                         Item 1
                                     </template>
-                                    <MenuItem name="1-1">Option 1</MenuItem>
+                                    <MenuItem name="1-1">Option 1
+                                    </MenuItem>
                                     <MenuItem name="1-2">Option 2</MenuItem>
                                     <MenuItem name="1-3">Option 3</MenuItem>
                                 </Submenu>
@@ -61,8 +62,8 @@
                                 </Submenu>
                             </Menu>
                         </Sider>
-                        <Content :style="{padding: '24px', minHeight: '550px', background: '#fff'}">
-                            Content
+                        <Content :style="{padding: '5px',minHeight: '650px', background: '#fff'}">
+                          <router-view></router-view>
                         </Content>
                     </Layout>
                 </Content>
@@ -73,7 +74,9 @@
 </template>
 <script>
     export default {
-
+      created(){
+        this.$router.push('/group')
+      }
     }
 </script>
 <style scoped>
@@ -97,7 +100,7 @@
 .layout-nav{
     width: 420px;
     margin: 0 auto;
-    margin-right: 20px;
+    margin-right: 5px;
 }
 .layout-footer-center{
     text-align: center;

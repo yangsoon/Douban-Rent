@@ -2,21 +2,22 @@
 urls = {
     "beijing": {
         1: "https://www.douban.com/group/beijingzufang/discussion?start=",
-        2: "https://www.douban.com/group/26926/discussion?start=",
+        # 2: "https://www.douban.com/group/26926/discussion?start=",
         # 3: "https://www.douban.com/group/opking/discussion?start=",
         # 4: "https://www.douban.com/group/279962/discussion?start="
         # 5: "https://www.douban.com/group/haidianzufang/discussion?start="
+        # 6: "https://www.douban.com/group/625354/discussion?start="
     },
-    "hangzhou": {
-        1: "https://www.douban.com/group/haidianzufang/discussion?start="
-    }
+    # "hangzhou": {
+    #     1: "https://www.douban.com/group/haidianzufang/discussion?start="
+    # }
 }
 
 # 抓取开始页码
 start_page = 1
 
 # 抓取截止页码
-end_page = 2
+end_page = 1
 
 # 代理池接口 使用 scylla
 proxy_host = "http://localhost:8899/api/v1/proxies"

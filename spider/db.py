@@ -18,12 +18,16 @@ class StoreInfo:
         return time.mktime(ts)
 
     async def store_info(self, info):
-        info['timestamp'] = self.get_timestamp(info['recent'])
+        info['r_timestamp'] = self.get_timestamp(info['recent'])
         await self.db.discussion.insert_one(info)
 
     async def store_page(self, page):
         page['timestamp'] = self.get_timestamp(page['add_time'])
         await self.db.topic.insert_one(page)
+        await self.db.discussion.update_one({'topic_id': page['topic_id']}, {'$set': {
+            'a_timestamp': page['timestamp'],
+            'add_time': page['add_time']
+        }})
 
     async def update_info(self, topic_id, comment_num, recent):
         timestamp = self.get_timestamp(recent)
