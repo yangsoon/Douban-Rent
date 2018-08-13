@@ -33,32 +33,15 @@
                 <Content :style="{padding: '15px 0',background: '#fff'}">
                     <Layout>
                         <Sider hide-trigger :style="{background: '#fff'}">
-                            <Menu active-name="1-2" theme="light" width="auto" :open-names="['1']">
-                                <Submenu name="1">
+                            <Menu v-if="places" active-name="beijing-1" theme="light" width="auto" :open-names="['beijing']" @on-select="test">
+                                <Submenu v-for="(items, place) in places" :name="place" :key="place">
                                     <template slot="title">
                                         <Icon type="ios-navigate"></Icon>
-                                        Item 1
+                                        {{ place }}
                                     </template>
-                                    <MenuItem name="1-1">Option 1
+                                    <MenuItem :name="place+'-'+idx" v-for="(url, idx) in items" :key="idx">
+                                      {{ idx }}
                                     </MenuItem>
-                                    <MenuItem name="1-2">Option 2</MenuItem>
-                                    <MenuItem name="1-3">Option 3</MenuItem>
-                                </Submenu>
-                                <Submenu name="2">
-                                    <template slot="title">
-                                        <Icon type="ios-keypad"></Icon>
-                                        Item 2
-                                    </template>
-                                    <MenuItem name="2-1">Option 1</MenuItem>
-                                    <MenuItem name="2-2">Option 2</MenuItem>
-                                </Submenu>
-                                <Submenu name="3">
-                                    <template slot="title">
-                                        <Icon type="ios-analytics"></Icon>
-                                        Item 3
-                                    </template>
-                                    <MenuItem name="3-1">Option 1</MenuItem>
-                                    <MenuItem name="3-2">Option 2</MenuItem>
                                 </Submenu>
                             </Menu>
                         </Sider>
@@ -73,9 +56,23 @@
     </div>
 </template>
 <script>
+    import ajax from "@/ajax"
     export default {
       created(){
-        this.$router.push('/group')
+        this.$router.push('/group');
+        ajax.getPlace().then((res)=>{
+          this.places = res.data
+        })
+      },
+      data(){
+        return {
+          places: null
+        }
+      },
+      methods:{
+        test(name){
+          console.log(name)
+        }
       }
     }
 </script>
