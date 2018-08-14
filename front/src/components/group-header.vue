@@ -1,5 +1,5 @@
 <template>
-  <Menu mode="horizontal" active-name="1" @on-select="transfer">
+  <Menu mode="horizontal" active-name="info" @on-select="transfer">
       <MenuItem name="info">
           <Icon type="ios-paper" />
           租房信息

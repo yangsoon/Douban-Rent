@@ -5,6 +5,7 @@ from aiohttp import ClientConnectionError
 
 import config
 from proxy_pool import ProxyPool
+from proxy_pool import MyPriorityQueue
 from util import log, get_urls, get_page_info, get_end_page
 
 import logging
@@ -73,17 +74,17 @@ async def douban_producer(queue, proxy, place, idx, url, start, end, sleep_time)
                                 f"解析 {place} 第 {start} 页")
         await asyncio.sleep(sleep_time + random.randint(4, 6))
         start += 1
-    await queue.put(None)
+    await queue.put(None, 100)
     logging.info(f"任务结束 生产者 {place} {idx} 执行结束")
 
 
 async def douban_consumer(queue, proxy, num, sleep_time):
     logging.info(f"任务开始 消费者 {num} 开始执行")
-    url = await queue.get()
+    url, _ = await queue.get()
     queue.task_done()
     if url is None:
         logging.info(f"任务结束 消费者 {num} 执行结束")
-        await queue.put(None)
+        await queue.put(None, 100)
         return
     count = 1
     while True:
@@ -103,16 +104,16 @@ async def douban_consumer(queue, proxy, num, sleep_time):
                 count = 1
                 logging.warning(f"异常任务 消费者 {num} 号 可能因为页面丢失放弃解析 {url}")
         await asyncio.sleep(sleep_time + random.randint(2, 4))
-        url = await queue.get()
+        url, _ = await queue.get()
         queue.task_done()
         if url is None:
             logging.info(f"任务结束 消费者 {num} 号 执行结束")
-            await queue.put(None)
+            await queue.put(None, 100)
             break
 
 
 async def model_one(loop, proxy, end_page):
-    queue = asyncio.Queue(maxsize=config.queue_num)
+    queue = MyPriorityQueue(maxsize=config.queue_num)
     await proxy.init_proxy_pool(config.local_num)
     producer = []
     for place, urls in config.urls.items():
@@ -127,7 +128,7 @@ async def model_one(loop, proxy, end_page):
 
 
 async def model_two(loop, proxy, place, end_page):
-    queue = asyncio.Queue(maxsize=config.queue_num)
+    queue = MyPriorityQueue(maxsize=config.queue_num)
     await proxy.init_proxy_pool(config.local_num)
     producer = []
     for idx, url in config.urls[place].items():

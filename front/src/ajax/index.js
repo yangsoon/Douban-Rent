@@ -14,4 +14,15 @@ ajax.getPlace = function () {
   return instance.get("/placelists")
 };
 
+ajax.getRent = function (params) {
+  return instance.get("/getrent", {
+    params
+  })
+};
+
+ajax.getDetail = function (params) {
+  return instance.get("/getdetail", {
+    params
+  })
+};
 export default ajax;

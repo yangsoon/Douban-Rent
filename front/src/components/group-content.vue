@@ -1,7 +1,9 @@
 <template>
     <div>
       <group-header @change-route="change"></group-header>
-      <router-view></router-view>
+      <keep-alive>
+        <router-view></router-view>
+      </keep-alive>
     </div>
 </template>
 
@@ -12,9 +14,6 @@
       components:{
           groupHeader
         },
-      created(){
-        this.$router.push({name: 'info'})
-      },
       methods:{
         change(name){
           this.$router.push({name: name.name})

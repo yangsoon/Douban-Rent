@@ -33,20 +33,21 @@
                 <Content :style="{padding: '15px 0',background: '#fff'}">
                     <Layout>
                         <Sider hide-trigger :style="{background: '#fff'}">
-                            <Menu v-if="places" active-name="beijing-1" theme="light" width="auto" :open-names="['beijing']" @on-select="test">
+                            <Menu v-if="places" :active-name="act_name" theme="light" width="auto" :open-names="open_names"
+                            @on-select="changePlace">
                                 <Submenu v-for="(items, place) in places" :name="place" :key="place">
                                     <template slot="title">
                                         <Icon type="ios-navigate"></Icon>
-                                        {{ place }}
+                                        {{ map_place[place] }}
                                     </template>
                                     <MenuItem :name="place+'-'+idx" v-for="(url, idx) in items" :key="idx">
-                                      {{ idx }}
+                                      {{ map_place[place+'-'+idx]}}
                                     </MenuItem>
                                 </Submenu>
                             </Menu>
                         </Sider>
                         <Content :style="{padding: '5px',minHeight: '650px', background: '#fff'}">
-                          <router-view></router-view>
+                            <router-view></router-view>
                         </Content>
                     </Layout>
                 </Content>
@@ -59,19 +60,41 @@
     import ajax from "@/ajax"
     export default {
       created(){
-        this.$router.push('/group');
-        ajax.getPlace().then((res)=>{
-          this.places = res.data
-        })
+          ajax.getPlace().then((res)=>{
+            this.init(res.data['urls']);
+            this.places = res.data['urls'];
+            this.map_place = res.data['map_place'];
+            this.$router.push('/group/info');
+          });
       },
       data(){
-        return {
-          places: null
-        }
+          return {
+            places: null,
+            map_place: null,
+            act_name: null,
+            open_names: []
+          }
       },
       methods:{
-        test(name){
-          console.log(name)
+        init(places){
+          for (let i in places){
+            this.open_names.push(i)
+          }
+          this.act_name = this.open_names[0] + '-' + '1';
+          let params = {place:this.open_names[0], idx:'1'};
+          this.$store.commit("setPlace", params);
+          this.fetchRent(params)
+        },
+        changePlace(name){
+          let result = name.split('-');
+          let params = {place: result[0], idx: result[1]};
+          this.$store.commit('setPlace', params);
+          this.fetchRent(params)
+        },
+        fetchRent(params){
+          ajax.getRent(params).then((res)=>{
+            this.$store.commit('setRent', res.data['rent'])
+          });
         }
       }
     }

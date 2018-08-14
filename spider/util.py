@@ -1,3 +1,4 @@
+import re
 import logging
 from bs4 import BeautifulSoup
 from config import LOG_FORMAT, DATE_FORMAT, mongo, redis
@@ -36,7 +37,7 @@ async def get_urls(content, queue, place, idx):
             logging.info(f"重复抓取 信息更新 {topic_id} {title_text}")
             await client.update_info(topic_id, comment_num, recent)
             continue
-        await queue.put(title_link)
+        await queue.put(title_link, 0)
         author_a = author.find("a")
         author_link, author_name = author_a.attrs['href'], author_a.text
         info = {
@@ -56,7 +57,7 @@ async def get_page_info(content, url):
     c = BeautifulSoup(content, "lxml")
     add_time = c.find(class_="color-green").text
     report = c.find(id="link-report")
-    detail = report.text.replace("\n", '').replace('-', '')
+    detail = report.text.replace(r"\n", '').replace('-', '')
     imgs = [img.attrs['src'] for img in report.findAll("img")]
     page = {
         'topic_id': topic_id,

@@ -13,9 +13,9 @@ export default new Router({
       path: '/group',
       component: groupContent,
       children:[
-        { path: '/info', name: 'info', component: groupInfo },
-        { path: '/filter', name: 'filter', component: groupFilter },
-        { path: '/analysis', name: 'analysis', component: groupAnalysis }
+        { path: 'info', name: 'info', component: groupInfo },
+        { path: 'filter', name: 'filter', component: groupFilter },
+        { path: 'analysis', name: 'analysis', component: groupAnalysis }
       ]
     }
   ]
