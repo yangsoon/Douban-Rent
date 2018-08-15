@@ -2,7 +2,7 @@ from dbrent.interface import BaseHandler
 from spider.config import urls, map_place
 from tornado import gen
 from bson import json_util
-from pymongo import DESCENDING, ASCENDING
+from pymongo import DESCENDING
 
 
 class PlaceListsHander(BaseHandler):
@@ -16,11 +16,12 @@ class RentInfoHandler(BaseHandler):
 
     @gen.coroutine
     def get(self):
-        place, idx = map(self.get_argument, ['place', 'idx'])
+        place, idx, page = map(self.get_argument, ['place', 'idx', 'page'])
         db = self.settings['db']
         cursor = db.discussion.find({'place': place, 'idx': int(idx)}).sort('r_timestamp', DESCENDING)
-        rent = yield cursor.to_list(25)
-        self.write(json_util.dumps({'rent': rent}).encode())
+        number = yield db.discussion.count_documents({'place': place, 'idx': int(idx)})
+        rent = yield cursor.skip((int(page) - 1) * 25).to_list(25)
+        self.write(json_util.dumps({'rent': rent, 'number': number}).encode())
 
 
 class RentDetailHandler(BaseHandler):

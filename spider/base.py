@@ -52,7 +52,7 @@ async def douban_producer(queue, proxy, place, idx, url, start, end, sleep_time)
         content = await aioget(url+'0', client, proxy)
         end_page = get_end_page(content)
     end = min(end, end_page)
-    logging.info(f"任务详情 {place} 共有 {end_page} 页 计划抓取 {start}-{end} 页")
+    logging.info(f"任务详情 {place} {idx} 共有 {end_page} 页 计划抓取 {start}-{end} 页")
     count = 1
     while start <= end:
         try:

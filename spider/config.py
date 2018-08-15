@@ -28,7 +28,7 @@ map_place = {
 start_page = 1
 
 # 抓取截止页码
-end_page = 1
+end_page = 5
 
 # 代理池接口 使用 scylla
 proxy_host = "http://localhost:8899/api/v1/proxies"

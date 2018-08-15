@@ -26,9 +26,9 @@
             </Header>
             <Layout :style="{padding: '0 50px'}">
                 <Breadcrumb :style="{margin: '16px 0'}">
-                    <BreadcrumbItem>Home</BreadcrumbItem>
-                    <BreadcrumbItem>Components</BreadcrumbItem>
-                    <BreadcrumbItem>Layout</BreadcrumbItem>
+                    <BreadcrumbItem>主页</BreadcrumbItem>
+                    <BreadcrumbItem v-if="act_name">{{ act_place }}</BreadcrumbItem>
+                    <BreadcrumbItem v-if="act_name">{{ map_place[act_name] }}</BreadcrumbItem>
                 </Breadcrumb>
                 <Content :style="{padding: '15px 0',background: '#fff'}">
                     <Layout>
@@ -47,7 +47,9 @@
                             </Menu>
                         </Sider>
                         <Content :style="{padding: '5px',minHeight: '650px', background: '#fff'}">
+                          <keep-alive>
                             <router-view></router-view>
+                          </keep-alive>
                         </Content>
                     </Layout>
                 </Content>
@@ -64,7 +66,6 @@
             this.init(res.data['urls']);
             this.places = res.data['urls'];
             this.map_place = res.data['map_place'];
-            this.$router.push('/group/info');
           });
       },
       data(){
@@ -74,6 +75,12 @@
             act_name: null,
             open_names: []
           }
+      },
+      computed: {
+        act_place(){
+            let place = this.act_name.split('-')[0];
+            return this.map_place[place]
+        }
       },
       methods:{
         init(places){
@@ -89,11 +96,18 @@
           let result = name.split('-');
           let params = {place: result[0], idx: result[1]};
           this.$store.commit('setPlace', params);
-          this.fetchRent(params)
+          this.fetchRent(params);
+          this.act_name = name
         },
         fetchRent(params){
+          this.$store.commit('setLoading', true);
+          params['page'] = 1;
           ajax.getRent(params).then((res)=>{
-            this.$store.commit('setRent', res.data['rent'])
+            this.$store.commit('setRent', res.data['rent']);
+            this.$store.commit('setNumber', res.data['number']);
+            this.$router.push('/group/info');
+            this.$store.commit('setLoading', false);
+            this.$store.commit('setCurrent', 1)
           });
         }
       }

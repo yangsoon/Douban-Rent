@@ -1,25 +1,41 @@
 <template>
   <div>
-    <div class="datalist">
-      <Table border :columns="column" :data="rent" v-if="rent"></Table>
+    <div class="datalist"  v-if="rent">
+      <Table border :columns="column" :data="rent" :loading="loading"></Table>
     </div>
-    <Page :total="100" />
+    <div v-if="number">
+      <Page id="page" :current.sync="current" :total="number" :page-size="25" @on-change="changePage"/>
+    </div>
+    <BackTop></BackTop>
   </div>
 </template>
 <script>
     import ajax from '@/ajax'
+    import { mapState } from 'vuex'
     export default {
         data () {
             return {
                 column: [
-                    { title: '标题', key: 'title_text', width: 450},
-                    { title: '作者', key: 'author_name', width: 110, align: 'center'},
-                    { title: '评论数', key: 'comment_num',align: 'center'},
-                    { title: '最后回应', key: 'recent', width: 110, align: 'center'},
+                    { title: '讨论', width: 450,
+                        render: (h, params) => {
+                            return h('strong', params.row.title_text);
+                          }
+                    },
+                    { title: '作者', width: 110, align: 'center' ,
+                        render: (h, params) => {
+                            return h('a', {
+                                attrs:{
+                                  href: params.row.author_link,
+                                  target: '_blank'
+                                },
+                            }, params.row.author_name);
+                          }
+                    },
                     { title: '发帖时间', key: 'add_time', width: 180, align: 'center'},
-                    { title: '详情',  key: 'action',
-                      width: 150, align: 'center',
-                      render: (h, params) => {
+                    { title: '回应数', key: 'comment_num',align: 'center'},
+                    { title: '最后回应', key: 'recent', width: 110, align: 'center'},
+                    { title: '详情', width: 150, align: 'center',
+                        render: (h, params) => {
                             return h('div', [
                                 h('Button', {
                                     props: { type: 'primary', size: 'small'},
@@ -40,15 +56,25 @@
                                     }
                                 }, '原址')
                             ]);
-                        }
+                          }
                     }
-                ],
+                ]
             }
         },
         computed: {
-          rent(){
-            return this.$store.state.app.rent
-          }
+          current: {
+            set: function (value) {
+              this.$store.commit('setCurrent', value)
+            },
+            get: function () {
+              return this.$store.state.app.current
+            }
+          },
+          ...mapState({
+              rent: state => state.app.rent,
+              loading: state => state.app.loading,
+              number: state => state.app.number
+          })
         },
         methods: {
             showDetail (index) {
@@ -61,7 +87,21 @@
                 });
             },
             openSource(index){
-              windows.open(this.rent[index]['title_link'])
+              window.open(this.rent[index]['title_link'])
+            },
+            changePage(page){
+              console.log(this.current);
+              let params = {
+                  place: this.$store.state.app.place,
+                  idx: this.$store.state.app.idx
+              };
+              params['page'] = page;
+              this.$store.commit('setLoading', true);
+              ajax.getRent(params).then((res)=>{
+                  this.$store.commit('setNumber', res.data['number']);
+                  this.$store.commit('setRent', res.data['rent']);
+                  this.$store.commit('setLoading', false);
+              })
             }
         }
     }
@@ -69,5 +109,8 @@
 <style scoped>
   .datalist {
     margin: 15px;
+  }
+  #page {
+    text-align: center;
   }
 </style>

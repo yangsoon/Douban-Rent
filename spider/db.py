@@ -34,5 +34,5 @@ class StoreInfo:
         await self.db.discussion.update_one({'topic_id': topic_id}, {'$set': {
             'recent': recent,
             'comment_num': comment_num,
-            'timestamp': timestamp
+            'r_timestamp': timestamp
         }})
