@@ -1,8 +1,25 @@
 <template>
     <div class="layout">
+        <Modal v-model="show" :closable="false" width="800">
+            <Row style="margin: 2% 3%">
+                <Col span="11">
+                  <Card>
+                    <img src="../static/wechat.jpg" style="width: 100%; height: 100%; margin: auto">
+                  </Card>
+                </Col>
+                <Col span="11" offset="2">
+                  <Card>
+                    <img src="../static/alipay.jpg" style="width: 100%; height: 100%; margin: auto">
+                  </Card>
+                </Col>
+            </Row>
+            <div slot="footer">
+                <Button type="primary" @click="del">确定</Button>
+            </div>
+        </Modal>
         <Layout>
             <Header>
-                <Menu mode="horizontal" theme="dark" active-name="index">
+                <Menu mode="horizontal" theme="dark" active-name="index" @on-select="showInfo">
                     <div class="layout-logo">
                       <h2 style="color: white; line-height: 35px;">
                         豆瓣租房
@@ -76,7 +93,8 @@
               places: null,
               map_place: null,
               act_name: null,
-              open_names: []
+              open_names: [],
+              show: false
             }
         },
         computed: {
@@ -95,25 +113,39 @@
                 this.$store.commit("setPlace", params);
                 this.fetchRent(params);
             },
-        changePlace(name){
-            let result = name.split('-');
-            let params = {place: result[0], idx: result[1]};
-            this.$store.commit('setPlace', params);
-            this.fetchRent(params);
-            this.act_name = name
-        },
-        fetchRent(params){
-            this.$store.commit('setLoading', true);
-            params['page'] = 1;
-            ajax.getRent(params).then((res)=>{
-                this.$store.commit('setRent', res.data['rent']);
-                this.$store.commit('setNumber', res.data['number']);
+            changePlace(name){
+                let result = name.split('-');
+                let params = {place: result[0], idx: result[1]};
+                this.$store.commit('setPlace', params);
+                this.fetchRent(params);
+                this.act_name = name
+            },
+            fetchRent(params){
+                this.$store.commit('setLoading', true);
+                params['page'] = 1;
+                ajax.getRent(params).then((res)=>{
+                    this.$store.commit('setRent', res.data['rent']);
+                    this.$store.commit('setNumber', res.data['number']);
+                    this.$router.push('/group/info');
+                    this.$store.commit('setLoading', false);
+                    this.$store.commit('setCurrent', 1)
+                });
+            },
+            showInfo(name){
+              if(name==='index'){
                 this.$router.push('/group/info');
-                this.$store.commit('setLoading', false);
-                this.$store.commit('setCurrent', 1)
-            });
+              }
+              if(name==='github'){
+                window.open('https://github.com/yangsoon/Douban-Rent')
+              }
+              if(name==='beg'){
+                this.show = true
+              }
+            },
+            del(){
+              this.show = false
+            }
         }
-      }
     }
 </script>
 <style scoped>
