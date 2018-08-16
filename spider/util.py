@@ -57,7 +57,9 @@ async def get_page_info(content, url):
     c = BeautifulSoup(content, "lxml")
     add_time = c.find(class_="color-green").text
     report = c.find(id="link-report")
-    detail = report.text.replace(r"\n", '').replace('-', '')
+    text_filter = lambda p: str(p) if len(p.text) > 0 else ''
+    temp = [text_filter(p) for p in report.findAll('p')]
+    detail = ''.join(temp)
     imgs = [img.attrs['src'] for img in report.findAll("img")]
     page = {
         'topic_id': topic_id,

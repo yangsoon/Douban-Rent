@@ -58,7 +58,7 @@ async def douban_producer(queue, proxy, place, idx, url, start, end, sleep_time)
         try:
             async with aiohttp.ClientSession() as client:
                 content = await aioget(url + str((start-1)*25), client, proxy)
-                logging.info(f"任务详情 生产者 {place} 在抓取第 {start} 页 {url + str((start-1)*25)}")
+                logging.info(f"任务详情 生产者 {place} {idx} 在抓取第 {start} 页 {url + str((start-1)*25)}")
                 await get_urls(content, queue, place, idx)
                 count = 1
         except AttributeError as ae:
@@ -72,7 +72,7 @@ async def douban_producer(queue, proxy, place, idx, url, start, end, sleep_time)
                 count = 1
                 logging.warning(f"异常任务 生产者 {place} 可能因为页面丢失放弃 "
                                 f"解析 {place} 第 {start} 页")
-        await asyncio.sleep(sleep_time + random.randint(4, 6))
+        await asyncio.sleep(sleep_time + random.randint(2, 4))
         start += 1
     await queue.put(None, 100)
     logging.info(f"任务结束 生产者 {place} {idx} 执行结束")

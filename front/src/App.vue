@@ -61,54 +61,57 @@
 <script>
     import ajax from "@/ajax"
     export default {
-      created(){
-          ajax.getPlace().then((res)=>{
-            this.init(res.data['urls']);
-            this.places = res.data['urls'];
-            this.map_place = res.data['map_place'];
-          });
-      },
-      data(){
-          return {
-            places: null,
-            map_place: null,
-            act_name: null,
-            open_names: []
-          }
-      },
-      computed: {
-        act_place(){
-            let place = this.act_name.split('-')[0];
-            return this.map_place[place]
-        }
-      },
-      methods:{
-        init(places){
-          for (let i in places){
-            this.open_names.push(i)
-          }
-          this.act_name = this.open_names[0] + '-' + '1';
-          let params = {place:this.open_names[0], idx:'1'};
-          this.$store.commit("setPlace", params);
-          this.fetchRent(params)
+        mounted(){
+            this.$Spin.show();
+            ajax.getPlace().then((res)=>{
+                this.$Spin.hide();
+                this.places = res.data['urls'];
+                this.map_place = res.data['map_place'];
+                this.init(res.data['urls']);
+            });
+
         },
+        data(){
+            return {
+              places: null,
+              map_place: null,
+              act_name: null,
+              open_names: []
+            }
+        },
+        computed: {
+          act_place(){
+              let place = this.act_name.split('-')[0];
+              return this.map_place[place]
+          }
+        },
+        methods:{
+            init(places){
+                for (let i in places){
+                  this.open_names.push(i)
+                }
+                this.act_name = this.open_names[0] + '-' + '1';
+                let params = {place:this.open_names[0], idx:'1'};
+                this.$store.commit("setPlace", params);
+                this.fetchRent(params);
+            },
         changePlace(name){
-          let result = name.split('-');
-          let params = {place: result[0], idx: result[1]};
-          this.$store.commit('setPlace', params);
-          this.fetchRent(params);
-          this.act_name = name
+            let result = name.split('-');
+            let params = {place: result[0], idx: result[1]};
+            this.$store.commit('setPlace', params);
+            this.fetchRent(params);
+            this.act_name = name
         },
         fetchRent(params){
-          this.$store.commit('setLoading', true);
-          params['page'] = 1;
-          ajax.getRent(params).then((res)=>{
-            this.$store.commit('setRent', res.data['rent']);
-            this.$store.commit('setNumber', res.data['number']);
-            this.$router.push('/group/info');
-            this.$store.commit('setLoading', false);
-            this.$store.commit('setCurrent', 1)
-          });
+            this.$store.commit('setLoading', true);
+            params['page'] = 1;
+            ajax.getRent(params).then((res)=>{
+                this.$store.commit('setRent', res.data['rent']);
+                this.$store.commit('setNumber', res.data['number']);
+                this.$router.push('/group/info');
+                this.$store.commit('setLoading', false);
+                this.$store.commit('setCurrent', 1)
+            });
         }
       }
     }

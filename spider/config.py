@@ -2,8 +2,8 @@
 urls = {
     "beijing": {
         1: "https://www.douban.com/group/beijingzufang/discussion?start=",
-        2: "https://www.douban.com/group/26926/discussion?start=",
-        3: "https://www.douban.com/group/opking/discussion?start=",
+        # 2: "https://www.douban.com/group/26926/discussion?start=",
+        # 3: "https://www.douban.com/group/opking/discussion?start=",
         4: "https://www.douban.com/group/625354/discussion?start=",
         5: "https://www.douban.com/group/haidianzufang/discussion?start=",
     },
@@ -43,7 +43,7 @@ queue_num = 500
 local_num = len(urls) + consumer_num
 
 # 生产者睡眠等待时间
-producer_time = 5
+producer_time = 2
 
 # 消费者睡眠等待时间
 consumer_time = 2

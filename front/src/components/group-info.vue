@@ -6,6 +6,15 @@
     <div v-if="number">
       <Page id="page" :current.sync="current" :total="number" :page-size="25" @on-change="changePage"/>
     </div>
+    <Modal v-model="show" scrollable :closable="false" width="700">
+      <Alert show-icon> {{title}}
+        <Icon type="ios-bulb-outline" slot="icon"></Icon>
+      </Alert>
+      <div v-html="detail" style="margin: 10px; font-size: 14px;"></div>
+      <div slot="footer">
+        <Button type="primary" @click="del">确定</Button>
+      </div>
+    </Modal>
     <BackTop></BackTop>
   </div>
 </template>
@@ -15,6 +24,9 @@
     export default {
         data () {
             return {
+                show: false,
+                title: null,
+                detail: null,
                 column: [
                     { title: '讨论', width: 450,
                         render: (h, params) => {
@@ -77,20 +89,20 @@
           })
         },
         methods: {
+            del(){
+              this.show = false;
+            },
             showDetail (index) {
                 ajax.getDetail({topic_id: this.rent[index]['topic_id']}).then((res)=>{
-                    this.$Modal.info({
-                      title: '租房信息简述',
-                      content: res.data.detail['detail'],
-                      width: 650
-                    })
+                    this.title = this.rent[index]['title_text'];
+                    this.show = true;
+                    this.detail = res.data.detail['detail']
                 });
             },
             openSource(index){
               window.open(this.rent[index]['title_link'])
             },
             changePage(page){
-              console.log(this.current);
               let params = {
                   place: this.$store.state.app.place,
                   idx: this.$store.state.app.idx
