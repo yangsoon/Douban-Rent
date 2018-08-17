@@ -7,15 +7,14 @@
       <Page id="page" :current.sync="current" :total="number" :page-size="25" @on-change="changePage"/>
     </div>
     <Modal v-model="show" scrollable :closable="false" width="700">
-      <Alert show-icon> {{title}}
+      <Alert show-icon> <h3>{{title}}</h3>
         <Icon type="ios-bulb-outline" slot="icon"></Icon>
       </Alert>
-      <div v-html="detail" style="margin: 10px; font-size: 14px;"></div>
+      <div v-html="detail" style="margin: 10px; font-size: 15px;"></div>
       <div slot="footer">
         <Button type="primary" @click="del">确定</Button>
       </div>
     </Modal>
-    <BackTop></BackTop>
   </div>
 </template>
 <script>
@@ -44,19 +43,19 @@
                           }
                     },
                     { title: '发帖时间', key: 'add_time', width: 180, align: 'center'},
-                    { title: '回应数', key: 'comment_num',align: 'center'},
+                    { title: '回应数', key: 'comment_num',width: 100, align: 'center'},
                     { title: '最后回应', key: 'recent', width: 110, align: 'center'},
                     { title: '详情', width: 150, align: 'center',
                         render: (h, params) => {
                             return h('div', [
                                 h('Button', {
-                                    props: { type: 'primary', size: 'small'},
+                                    props: { type: 'primary', size: 'small', disabled: !params.row.add_time},
                                     style: { marginRight: '5px'},
                                     on: {
                                         click: () => {
                                             this.showDetail(params.index)
                                         }
-                                    }
+                                    },
                                 }, '简述'),
                                 h('Button', {
                                     props: { type: 'success', size: 'small'},
@@ -96,7 +95,15 @@
                 ajax.getDetail({topic_id: this.rent[index]['topic_id']}).then((res)=>{
                     this.title = this.rent[index]['title_text'];
                     this.show = true;
-                    this.detail = res.data.detail['detail']
+                    if(res.data.detail['detail'].length === 0){
+                        this.detail = `<br>信息不完整请点击<strong>`+
+                                       `<a href='https://www.douban.com/group/topic/${this.rent[index]['topic_id']}/'`+
+                                       ` target="_blank">原址</a>` +
+                                       `</strong>查看详情`;
+                    }
+                    else{
+                        this.detail = res.data.detail['detail']
+                    }
                 });
             },
             openSource(index){
