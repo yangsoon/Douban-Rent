@@ -1,5 +1,5 @@
 <template>
-  <Menu mode="horizontal" active-name="info" @on-select="transfer">
+  <Menu ref="child" mode="horizontal" active-name="info" @on-select="transfer">
       <MenuItem name="info">
           <Icon type="ios-paper" />
           租房信息
@@ -19,9 +19,9 @@
     export default {
         name: "group-header",
         methods:{
-          transfer(name){
-            this.$emit('change-route', {name: name})
-          }
+            transfer(name){
+                this.$emit('change-route', {name: name})
+            }
         }
     }
 </script>

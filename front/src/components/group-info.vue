@@ -42,8 +42,8 @@
                             }, params.row.author_name);
                           }
                     },
-                    { title: '发帖时间', key: 'add_time', width: 180, align: 'center'},
-                    { title: '回应数', key: 'comment_num',width: 100, align: 'center'},
+                    { title: '发帖时间', key: 'add_time', width: 175, align: 'center'},
+                    { title: '回应数', key: 'comment_num',width: 86, align: 'center'},
                     { title: '最后回应', key: 'recent', width: 110, align: 'center'},
                     { title: '详情', width: 150, align: 'center',
                         render: (h, params) => {

@@ -17,5 +17,11 @@ new Vue({
   router,
   store: strore,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  mounted(){
+      this.$Notice.config({
+          top: 120,
+          duration: 5
+      });
+  }
 });

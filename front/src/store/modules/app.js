@@ -5,7 +5,9 @@ const app = {
       rent: null,
       loading: false,
       number: null,
-      current: 1
+      current: 1,
+      map_place: null,
+      places: null,
   },
   mutations:{
       setPlace(state, params){
@@ -23,6 +25,12 @@ const app = {
       },
       setCurrent(state, current){
         state.current = current
+      },
+      setMapPlace(state, map_place){
+        state.map_place = map_place
+      },
+      setPlaces(state, urls){
+        state.places = urls
       }
   }
 };

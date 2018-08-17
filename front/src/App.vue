@@ -82,31 +82,35 @@
 </template>
 <script>
     import ajax from "@/ajax"
+    import { mapState } from 'vuex'
     export default {
         mounted(){
             this.$Spin.show();
             ajax.getPlace().then((res)=>{
                 this.$Spin.hide();
-                this.places = res.data['urls'];
-                this.map_place = res.data['map_place'];
+                this.$store.commit('setPlaces', res.data['urls']);
+                this.$store.commit('setMapPlace', res.data['map_place']);
                 this.init(res.data['urls']);
+                this.$router.push('/group/info')
             });
 
         },
         data(){
             return {
-              places: null,
-              map_place: null,
               act_name: null,
               open_names: [],
               show: false
             }
         },
         computed: {
-          act_place(){
-              let place = this.act_name.split('-')[0];
-              return this.map_place[place]
-          }
+            act_place(){
+                let place = this.act_name.split('-')[0];
+                return this.map_place[place]
+            },
+            ...mapState({
+                places: state => state.app.places,
+                map_place: state => state.app.map_place,
+            })
         },
         methods:{
             init(places){
@@ -123,7 +127,7 @@
                 let params = {place: result[0], idx: result[1]};
                 this.$store.commit('setPlace', params);
                 this.fetchRent(params);
-                this.act_name = name
+                this.act_name = name;
             },
             fetchRent(params){
                 this.$store.commit('setLoading', true);
@@ -131,19 +135,18 @@
                 ajax.getRent(params).then((res)=>{
                     this.$store.commit('setRent', res.data['rent']);
                     this.$store.commit('setNumber', res.data['number']);
-                    this.$router.push('/group/info');
                     this.$store.commit('setLoading', false);
                     this.$store.commit('setCurrent', 1)
                 });
             },
             showInfo(name){
-              if(name==='index'){
+              if(name ==='index'){
                 this.$router.push('/group/info');
               }
-              if(name==='github'){
+              if(name ==='github'){
                 window.open('https://github.com/yangsoon/Douban-Rent')
               }
-              if(name==='beg'){
+              if(name ==='beg'){
                 this.show = true
               }
             },
