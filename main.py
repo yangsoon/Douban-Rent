@@ -18,7 +18,8 @@ class Application(tornado.web.Application):
         handlers = [
             (r'/placelists', dbrent.handlers.PlaceListsHander),
             (r'/getrent', dbrent.handlers.RentInfoHandler),
-            (r'/getdetail', dbrent.handlers.RentDetailHandler)
+            (r'/getdetail', dbrent.handlers.RentDetailHandler),
+            (r'/filterrent', dbrent.handlers.RentFilterHandler)
         ]
         settings = dict(
             debug=options.debug,

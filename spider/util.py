@@ -1,9 +1,9 @@
-import re
 import logging
 from bs4 import BeautifulSoup
 from config import LOG_FORMAT, DATE_FORMAT, mongo, redis
 import aioredis
 from db import StoreInfo
+from config import gender_class
 
 
 def log(l: logging, filename):
@@ -39,12 +39,18 @@ async def get_urls(content, queue, place, idx):
             continue
         await queue.put(title_link, 0)
         author_a = author.find("a")
+        if set(title_text) & gender_class['male']:
+            gender = 1
+        elif set(title_text) & gender_class['female']:
+            gender = 0
+        else:
+            gender = 2
         author_link, author_name = author_a.attrs['href'], author_a.text
         info = {
             "title_link": title_link, "title_text": title_text,
             "author_link": author_link, "author_name": author_name,
             "comment_num": comment_num, "recent": recent,
-            "place": place, "idx": idx,
+            "place": place, "idx": idx, "gender": gender,
             "topic_id": topic_id
         }
         await client.store_info(info)

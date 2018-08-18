@@ -3,7 +3,7 @@
         <Modal v-model="show" :closable="false" width="800">
             <p slot="header">
               <Icon type="ios-thumbs-up-outline" size="20"></Icon>
-              <span>如果本项目帮到了你，欢迎打赏</span>
+              <span>如果本项目帮到了你，希望打赏以维持服务器</span>
             </p>
             <Row style="margin: 2% 3%">
                 <Col span="11">

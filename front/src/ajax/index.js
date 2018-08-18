@@ -25,4 +25,11 @@ ajax.getDetail = function (params) {
     params
   })
 };
+
+ajax.filterRent = function (params) {
+  return instance.get("/filterrent", {
+    params
+  })
+};
+
 export default ajax;

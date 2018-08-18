@@ -8,7 +8,15 @@ urls = {
         5: "https://www.douban.com/group/haidianzufang/discussion?start=",
     },
     "hangzhou": {
-        1: "https://www.douban.com/group/HZhome/discussion?start="
+        1: "https://www.douban.com/group/HZhome/discussion?start=",
+        2: "https://www.douban.com/group/145219/discussion?start="
+    },
+    "shanghai": {
+        1: "https://www.douban.com/group/shanghaizufang/discussion?start=",
+        2: "https://www.douban.com/group/467799/discussion?start="
+    },
+    "shenzhen": {
+        1: "https://www.douban.com/group/106955/discussion?start=",
     }
 }
 
@@ -22,6 +30,12 @@ map_place = {
     'beijing-5': '北京海淀租房',
     'hangzhou': '杭州',
     'hangzhou-1': '杭州租房',
+    'hangzhou-2': '杭州(中介免入)',
+    "shanghai": "上海",
+    "shanghai-1": "上海租房",
+    "shanghai-2": "房东直租",
+    "shenzhen": "深圳",
+    "shenzhen-1": "深圳租房团"
 }
 
 # 抓取开始页码
@@ -79,3 +93,9 @@ redis = ("127.0.0.1", 6379)
 
 # 定时任务执行时间间隔
 wait_time = 1 * 60
+
+# 性别分类
+gender_class = {
+    "male": set("男汉伙哥弟"),
+    "female": set("女姐妹")
+}
