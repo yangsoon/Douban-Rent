@@ -19,7 +19,7 @@
 
 初始化爬虫使用aiohttp进行抓取并放入数据库 修改spider目录下的config文件进行自主配置
 
-| urls               | 需要抓取租房信息的小组链接 `https://www.douban.com/group/<小组名id>/discussion?start=`具体设置查看config.py |
+| 配置项目           | 配置描述                                                     |
 | ------------------ | ------------------------------------------------------------ |
 | start_page         | 抓取开始页码 默认为 1                                        |
 | end_page           | 抓取截止页面 默认为 5                                        |
@@ -35,6 +35,7 @@
 | mongo              | mongodb 配置信息                                             |
 | redis              | redis 配置信息                                               |
 | wait_time          | 为了保证租房信息的实时性，会循环进行数据抓取，wait_time 设置定时任务执行时间间隔 |
+| urls               | 具体配置查看config.py                                        |
 
 1. 执行信息初始化爬虫
 
