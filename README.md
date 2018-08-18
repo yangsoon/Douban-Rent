@@ -2,6 +2,14 @@
 
 抓取豆瓣小组的租房页面，可以有选择的获取租房信息
 
+### 具体界面
+
+![首页](http://ww1.sinaimg.cn/large/006r0i4lly1fue3to4slsj32e81j04m9.jpg)
+![](http://ww1.sinaimg.cn/large/006r0i4lly1fue3toljkmj32e81j0dzs.jpg)
+![](http://ww1.sinaimg.cn/large/006r0i4lly1fue3toxc09j32e81j01e7.jpg)
+![](http://ww1.sinaimg.cn/large/006r0i4lly1fue3tpduvcj32e81j01kx.jpg)
+
+
 ### 前端
 
 使用 iview 编写
@@ -74,12 +82,3 @@ pip3 install -r requirements.txt
 python3 main.py
 ```
 
-#### 具体界面
-
-![首页](http://ww1.sinaimg.cn/large/006r0i4lly1fue3to4slsj32e81j04m9.jpg)
-![](http://ww1.sinaimg.cn/large/006r0i4lly1fue3toljkmj32e81j0dzs.jpg)
-![](http://ww1.sinaimg.cn/large/006r0i4lly1fue3toxc09j32e81j01e7.jpg)
-![](http://ww1.sinaimg.cn/large/006r0i4lly1fue3tpduvcj32e81j01kx.jpg)
-![](http://ww1.sinaimg.cn/large/006r0i4lly1fue3zsumruj32e81j0e81.jpg)
-![](http://ww1.sinaimg.cn/large/006r0i4lly1fue3ztmfwhj32e81j0kjl.jpg)
-![](http://ww1.sinaimg.cn/large/006r0i4lly1fue3zulmpbj32e81j01ky.jpg)
