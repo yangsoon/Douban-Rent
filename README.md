@@ -19,8 +19,33 @@
 
 初始化爬虫使用aiohttp进行抓取并放入数据库 修改spider目录下的config文件进行自主配置
 
+| urls               | 需要抓取租房信息的小组链接 `https://www.douban.com/group/<小组名id>/discussion?start=`具体设置查看config.py |
+| ------------------ | ------------------------------------------------------------ |
+| start_page         | 抓取开始页码 默认为 1                                        |
+| end_page           | 抓取截止页面 默认为 5                                        |
+| proxy_host         | 代理池接口 如果运行在本地为 `http://localhost:8899/api/v1/proxies` |
+| consumer_num       | 消费者的个数 爬虫使用生产者消费者模式，生产者抓取每个页面所有的租房链接，放到队列中，消费者从队列中获取链接，然后对租房内容进行分析提取。生产者的个数根据小组数目确定。 |
+| queue_num          | 即上述队列的长度                                             |
+| producer_time      | 生产者睡眠等待时间 因为豆瓣对抓取频率有限制 所以要有一定的等待时间 |
+| consumer_time      | 消费者睡眠等待时间                                           |
+| max_score          | 代理评分阈值 当分值大于该值后 代理ip会被移出代理队列 对代理池中的代理进行评分 当出现某一异常后会附加一定的损耗值。 |
+| timeout_cost       | 当代理请求超时后附加的损耗值                                 |
+| connect_error_cost | 当代理出现连接错误后的损耗值                                 |
+| error_cost         | 当代理出现其他错误后的损耗值                                 |
+| mongo              | mongodb 配置信息                                             |
+| redis              | redis 配置信息                                               |
+| wait_time          | 为了保证租房信息的实时性，会循环进行数据抓取，wait_time 设置定时任务执行时间间隔 |
+
+1. 执行信息初始化爬虫
+
 ```
 python3 base.py
+```
+
+2. 执行定时抓取任务
+
+```
+python3 task.py
 ```
 
 ### 代理池
@@ -44,4 +69,7 @@ npm run dev
 pip3 install -r requirements.txt
 ```
 
-系统开发ing.....
+```
+python3 main.py
+```
+

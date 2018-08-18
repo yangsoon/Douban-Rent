@@ -28,8 +28,9 @@
                           </RadioGroup>
                       </FormItem>
                       <FormItem label="关键字搜索">
-                          <Input search enter-button placeholder="输入关键字, 比如: 北航"
-                                 @on-search="search" v-model="key_word" size="large"></Input>
+                          <Input search enter-button placeholder="输入关键字, 比如: 海淀"
+                                 @on-search="search" @on-enter="search"
+                                 v-model="key_word" size="large"></Input>
                       </FormItem>
                   </Form>
               </Col>
@@ -48,7 +49,7 @@
         </Card>
       <Row>
         <Divider>筛选结果</Divider>
-        <Table v-if="rent" border :columns="column" :data="rent"></Table>
+        <Table v-if="rent" border :columns="column" :data="rent" :loading="loading"></Table>
       </Row>
   </div>
 </template>
@@ -65,6 +66,7 @@
               show: false,
               title: null,
               detail: null,
+              loading: false,
               column: [
                     { title: '讨论', width: 450,
                         render: (h, params) => {
@@ -135,6 +137,7 @@
                     })
                 }
                 else {
+                    this.loading = true;
                     let params = {
                         place: this.place,
                         groups: this.selected_groups.join('-'),
@@ -142,7 +145,8 @@
                         key_word: this.key_word
                     };
                     ajax.filterRent(params).then((res)=>{
-                        this.rent = res.data['rent']
+                        this.rent = res.data['rent'];
+                        this.loading = false
                     })
                 }
             },
