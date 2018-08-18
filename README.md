@@ -69,7 +69,6 @@ python3 task.py
 ```
 cd front
 npm install
-npm run dev
 ```
 
 2. 后端配置
@@ -78,7 +77,34 @@ npm run dev
 pip3 install -r requirements.txt
 ```
 
+### 项目运行
+
+1. 使用代理池服务
+
 ```
-python3 main.py
+docker run -d -p 8899:8899 -p 8081:8081 -v /var/www/scylla:/var/www/scylla --name scylla wildcat/scylla:latest
 ```
 
+2. 初始化数据库
+
+```
+python3 spider/base.py
+```
+
+3. 执行定时任务
+
+```
+python3 spider/task.py
+```
+
+4. 启动前端页面
+
+```
+cd front
+npm run dev
+```
+
+### TODO
+
+- [ ] 统计租房信息并可视化
+- [ ] 优化信息筛选功能
