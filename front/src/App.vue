@@ -8,12 +8,12 @@
             <Row style="margin: 2% 3%">
                 <Col span="11">
                   <Card>
-                    <img src="../static/wechat.jpg" style="width: 100%; height: 100%; margin: auto">
+                    <img src="./assets/wechat.jpg" style="width: 100%; height: 100%; margin: auto">
                   </Card>
                 </Col>
                 <Col span="11" offset="2">
                   <Card>
-                    <img src="../static/alipay.jpg" style="width: 100%; height: 100%; margin: auto">
+                    <img src="./assets/alipay.jpg" style="width: 100%; height: 100%; margin: auto">
                   </Card>
                 </Col>
             </Row>
@@ -85,13 +85,15 @@
     import { mapState } from 'vuex'
     export default {
         mounted(){
-            this.$Spin.show();
             ajax.getPlace().then((res)=>{
-                this.$Spin.hide();
                 this.$store.commit('setPlaces', res.data['urls']);
                 this.$store.commit('setMapPlace', res.data['map_place']);
                 this.init(res.data['urls']);
                 this.$router.push('/group/info')
+            }).catch((res)=>{
+                this.$Message.error({
+                  content: "网络错误"
+                })
             });
 
         },
