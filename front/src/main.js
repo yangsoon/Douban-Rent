@@ -23,5 +23,9 @@ new Vue({
           top: 120,
           duration: 5
       });
+      this.$Message.config({
+          top: 100,
+          duration: 3
+      });
   }
 });

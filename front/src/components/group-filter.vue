@@ -49,7 +49,12 @@
         </Card>
       <Row>
         <Divider>筛选结果</Divider>
-        <Table v-if="rent" border :columns="column" :data="rent" :loading="loading"></Table>
+        <div v-if="rent" style="margin: 15px 0px;">
+            <Table border :columns="column" :data="show_rent" :loading="loading"></Table>
+        </div>
+        <div v-if="number">
+            <Page id="page" :total="number" :page-size="25" @on-change="changePage"/>
+        </div>
       </Row>
   </div>
 </template>
@@ -62,13 +67,15 @@
               selected_groups: [],
               gender: 2,
               rent: null,
+              page: 1,
               key_word: '',
+              number: null,
               show: false,
               title: null,
               detail: null,
               loading: false,
               column: [
-                    { title: '讨论', width: 450,
+                    { title: '讨论', width: 430,
                         render: (h, params) => {
                             return h('strong', params.row.title_text);
                           }
@@ -120,12 +127,15 @@
                 map_place: state => state.app.map_place
             }),
             active_groups(){
-              let groups = [];
-              for(let place in this.places[this.place]){
-                groups.push(place)
-              }
-              this.selected_groups = groups;
-              return groups
+                let groups = [];
+                for(let place in this.places[this.place]){
+                  groups.push(place)
+                }
+                this.selected_groups = groups;
+                return groups
+            },
+            show_rent(){
+                return this.rent.slice((this.page-1)*25, Math.min(this.page*25, this.number))
             }
         },
         methods: {
@@ -146,6 +156,10 @@
                     };
                     ajax.filterRent(params).then((res)=>{
                         this.rent = res.data['rent'];
+                        this.number = this.rent.length;
+                        this.$Message.success({
+                          content: `为您筛选到${this.rent.length}条信息, 分成${Math.ceil(this.rent.length/25)}页显示`,
+                        });
                         this.loading = false
                     })
                 }
@@ -168,6 +182,9 @@
                     }
                 });
             },
+            changePage(page){
+                this.page = page
+            },
             del(){
                 this.show = false;
             },
@@ -177,5 +194,8 @@
 <style scoped>
 .filter{
   margin: 25px;
+}
+#page {
+  text-align: center;
 }
 </style>
