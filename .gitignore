@@ -249,3 +249,4 @@ venv.bak/
 .mypy_cache/
 /spider/scylla.db
 *.db
+/front/public
