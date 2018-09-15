@@ -8,12 +8,12 @@
             <Row style="margin: 2% 3%">
                 <Col span="11">
                   <Card>
-                    <img src="./assets/wechat.jpg" style="width: 100%; height: 100%; margin: auto">
+                    <!--<img src="./assets/wechat.jpg" style="width: 100%; height: 100%; margin: auto">-->
                   </Card>
                 </Col>
                 <Col span="11" offset="2">
                   <Card>
-                    <img src="./assets/alipay.jpg" style="width: 100%; height: 100%; margin: auto">
+                    <!--<img src="./assets/alipay.jpg" style="width: 100%; height: 100%; margin: auto">-->
                   </Card>
                 </Col>
             </Row>
