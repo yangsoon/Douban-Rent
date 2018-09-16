@@ -247,3 +247,4 @@ venv.bak/
 /spider/scylla.db
 *.db
 /front/public
+!/front/static
